@@ -1,6 +1,6 @@
 ## Summary
 
-This repository contains Dockerfile of [Surrogator](https://github.com/cweiske/surrogator).
+This repository contains Dockerfile and docker-compose.yml of [Surrogator](https://github.com/cweiske/surrogator).
 
 ## Usage
 ### Run
