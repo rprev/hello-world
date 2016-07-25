@@ -1,0 +1,49 @@
+version: '2'
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/docker/nginx-proxy/certs:/etc/nginx/certs
+      - /var/docker/nginx-proxy/log:/var/log/nginx
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+
+  surrogator:
+    image: rprev/surrogator
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      - /var/docker/surrogator/raw:/opt/surrogator/raw
+    environment:
+      - VIRTUAL_HOST=www.gravatar.com,gravatar.com
+
+  letschat:
+    image: sdelements/lets-chat
+    links:
+      - mongo
+    volumes:
+      - /var/letschat/files:/usr/src/app/uploads
+    environment:
+      - VIRTUAL_HOST=letschat.local
+      - VIRTUAL_PORT=8080
+      - LCB_FILES_ENABLE=true
+      - LCB_FILES_ALLOWED_TYPES=image/jpeg,image/png,image/gif,text/plain
+ 
+  mongo:
+    image: mongo
+    volumes:
+      - /var/docker/letschat/db:/data/db
+
+  hubot:
+   image: rprev/hubot-letschat
+   links:
+     - letschat
+   volumes:
+      - /var/docker/hubot/scripts:/home/hubot/scripts
+   environment:
+     - HUBOT_LCB_TOKEN=NTc4ZmEwNmI5OWU4NGUxMjAwNzI0OWJhOjg0OThhZTQ0YWUyMDZjYWQ4NTQ4YzYzZjVmMWRiZGEwNmExOWFiOGRhMGMzNWM1YQ==
+     - HUBOT_LCB_ROOMS=578ba46a079f361200037756
+     - HUBOT_LCB_HOSTNAME=letschat
+     - HUBOT_LCB_PORT=8080

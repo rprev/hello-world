@@ -1,2 +1,2 @@
 ## Docker
-This repository contains each Dockerfiles and docker-compose.yml
+This repository contains Dockerfiles and docker-compose.yml
